@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Verifikasi Keaslian Surat RT.022 RW.007</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+  padding:20px;
+}
+.card{
+  background:#fff;
+  max-width:420px;
+  margin:auto;
+  padding:20px;
+  border-radius:10px;
+}
+.status-box{
+  text-align:center;
+  padding:12px;
+  margin-bottom:15px;
+  border-radius:6px;
+  font-size:16px;
+  font-weight:bold;
+}
+.status-valid{
+  background:#e6f4ea;
+  color:#137333;
+  border:1px solid #b7dfc2;
+}
+.status-invalid{
+  background:#fce8e6;
+  color:#a50e0e;
+  border:1px solid #f5c6cb;
+}
+.header{
+  text-align:center;
+  background: #0d47a1;
+  color: white;
+  padding:15px 10px;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+.header img{
+  max-width:70px;
+  margin-bottom:5px; /* rapatkan logo ke judul */
+}
+.header h2{
+  margin:5px 0 2px 0; /* rapatkan judul ke logo & subjudul */
+  font-size:20px;
+}
+.header p{
+  margin:2px 0; /* rapatkan subjudul */
+  font-size:12px;
+  opacity:0.9;
+}
+h3{
+  margin-top:10px;
+  text-align:center;
+  font-size:16px;
+}
+.footer{
+  margin-top:15px;
+  font-size:12px;
+  color:#777;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="header">
+    <img src="logo.png" alt="Logo RT">
+    <h2>VERIFIKASI SURAT RESMI</h2>
+    <p>RT.022 RW.007</p>
+    <p>Desa Sukasejati Kecamatan Cikarang Selatan</p>
+  </div>
+
+  <h3>Validasi Keaslian Surat</h3>
+  <div id="hasil">Memuat data...</div>
+
+  <p style="font-size:11px;color:#777;text-align:center;">
+    Dokumen ini ditandatangani secara elektronik dan sah tanpa tanda tangan basah.
+  </p>
+
+  <div class="footer" id="waktuAkses"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwidWhckoVJD47CZ4eLC6VaYeRKPjMiRw7Bf22DRJwthmeqVfvIew9AiDGtKlnrZwzE/exec";
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const hasil = document.getElementById("hasil");
+
+if(!id){
+  hasil.innerHTML = `
+    <div class="status-box status-invalid">
+      KODE VERIFIKASI TIDAK DITEMUKAN
+    </div>`;
+}else{
+  fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data.status==="valid"){
+        hasil.innerHTML = `
+          <div class="status-box status-valid">✔ SURAT SAH / VALID</div>
+          <p><b>Nomor Surat:</b><br>${data.nomor}</p>
+          <p><b>Nama Pemohon:</b><br>${data.pemohon}</p>
+          <p><b>Nama Penandatangan:</b><br>${data.nama}</p>
+          <p><b>Jabatan:</b><br>${data.jabatan}</p>
+          <p><b>Tanggal:</b><br>${data.tanggal}</p>
+        `;
+      }else{
+        hasil.innerHTML = `
+          <div class="status-box status-invalid">
+            ✖ SURAT TIDAK TERDAFTAR
+          </div>`;
+      }
+    })
+    .catch(()=>{
+      hasil.innerHTML = `
+        <div class="status-box status-invalid">
+          GAGAL MENGAMBIL DATA
+        </div>`;
+    });
+}
+
+document.getElementById("waktuAkses").innerText =
+  "Diakses: " + new Date().toLocaleString("id-ID") + " WIB";
+</script>
+
+</body>
+
+</html>
